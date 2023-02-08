@@ -22,6 +22,7 @@ public class CsxGenerator : ISourceGenerator
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             CreateNoWindow = true,
+            StandardOutputEncoding = Encoding.UTF8
         };
 
         foreach (var file in context.AdditionalFiles)

@@ -9,6 +9,7 @@ var output = Template
     .Parse(GetTemplateSource())
     .Render(new { textFileContent }, member => member.Name);
 
+OutputEncoding = Encoding.UTF8;
 Write(output);
 
 
