@@ -16,4 +16,9 @@
         <AdditionalFiles Include="Scripts\*.csx" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+
 </Project>

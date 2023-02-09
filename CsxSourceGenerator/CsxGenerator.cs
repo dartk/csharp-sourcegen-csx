@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 
 namespace CSXSourceGenerator;
@@ -17,18 +15,15 @@ public class CsxGenerator : ISourceGenerator
     }
 
 
-    public void Execute(GeneratorExecutionContext context)
+    public void Execute(GeneratorExecutionContext context) => Try(() =>
     {
-        var defaultEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
-
         var startInfo = new ProcessStartInfo
         {
-            FileName = "dotnet-script",
+            FileName = "dotnet-script.exe",
             UseShellExecute = false,
             RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true,
-            StandardErrorEncoding = defaultEncoding
+            StandardOutputEncoding = Encoding.UTF8,
+            RedirectStandardError = true
         };
 
         foreach (var file in context.AdditionalFiles)
@@ -38,48 +33,79 @@ public class CsxGenerator : ISourceGenerator
                 continue;
             }
 
-            startInfo.Arguments = file.Path;
-            startInfo.WorkingDirectory = Path.GetDirectoryName(file.Path);
+            var filePath = Path.GetFullPath(file.Path);
 
+            startInfo.Arguments = Path.GetFileName(filePath);
+            startInfo.WorkingDirectory = Path.GetDirectoryName(filePath);
             var process = new Process { StartInfo = startInfo };
             process.Start();
-            process.WaitForExit();
 
-            if (process.ExitCode != 0)
+            var sourceBuilder = BeginReadOutput(process);
+            var errors = BeginReadErrors(process);
+
+            while (!process.WaitForExit(50))
             {
-                var errors = process.StandardError.ReadToEnd();
-                var match = ExceptionRegex.Match(errors);
-                if (match.Success)
+                if (context.CancellationToken.IsCancellationRequested)
                 {
-                    var message = match.Groups["message"].Value;
-                    var line = int.Parse(match.Groups["line"].Value);
-                    
-                    var linePositionStart = new LinePosition(line - 1, 0);
-                    var linePositionEnd = new LinePosition(line , 0);
-                    var linePositionSpan = new LinePositionSpan(linePositionStart, linePositionEnd);
-                    var location = Location.Create(file.Path, default, linePositionSpan);
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        ScriptRuntimeException,
-                        location,
-                        message));
+                    process.Kill();
+                    process.WaitForExit(5000);
+                    return;
                 }
-                else
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(ScriptExecutionError, Location.None, file.Path, errors));
-                }
-
-                return;
             }
 
-            var source = process.StandardOutput.ReadToEnd();
-            context.AddSource(Path.GetFileNameWithoutExtension(file.Path), source);
+            context.AddSource(Path.GetFileName(filePath) + ".out", sourceBuilder.ToString());
+            
+            if (process.ExitCode == 0)
+            {
+                foreach (var error in errors)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(ScriptWarning,
+                        Location.None, error));
+                }
+            }
+            else
+            {
+                foreach (var error in errors)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(ScriptError,
+                        Location.None, error));
+                }
+            }
+
+
+            static StringBuilder BeginReadOutput(Process process)
+            {
+                var output = new StringBuilder();
+
+                process.OutputDataReceived += (_, args) => output.AppendLine(args.Data);
+                process.BeginOutputReadLine();
+
+                return output;
+            }
+
+
+            static List<string> BeginReadErrors(Process process)
+            {
+                var errors = new List<string>();
+
+                process.ErrorDataReceived += (_, args) =>
+                {
+                    var line = args.Data;
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        errors.Add(line);
+                    }
+                };
+                process.BeginErrorReadLine();
+
+                return errors;
+            }
         }
-    }
+    });
 
 
-    private static readonly DiagnosticDescriptor ScriptRuntimeException = new(
-        id: "CSXGEN002",
+    private static readonly DiagnosticDescriptor ScriptError = new(
+        id: "CSXGEN001",
         title: "C# script threw exception",
         messageFormat: "{0}",
         category: "CsxSourceGenerator",
@@ -87,15 +113,24 @@ public class CsxGenerator : ISourceGenerator
         isEnabledByDefault: true);
 
 
-    private static readonly DiagnosticDescriptor ScriptExecutionError = new(
-        id: "CSXGEN001",
-        title: "Couldn't execute C# script",
-        messageFormat: "'{0}' execution ended with errors." + Environment.NewLine + "{1}",
+    private static readonly DiagnosticDescriptor ScriptWarning = new(
+        id: "CSXGEN002",
+        title: "C# script produced warning",
+        messageFormat: "{0}",
+        category: "CsxSourceGenerator",
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true);
+
+
+    private static readonly DiagnosticDescriptor ScriptExecutionTimout = new(
+        id: "CSXGEN004",
+        title: "C# script execution timed out",
+        messageFormat: "'{0}' execution timed out",
         category: "CsxSourceGenerator",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true);
-    
-    
+
+
     private static readonly Regex ExceptionRegex =
-        new ($@".*Exception: (?<message>.*)\r?\n? *at .*:line (?<line>[\d]+)");
+        new($@".*Exception: (?<message>.*)\r?\n? *at .*:line (?<line>[\d]+)");
 }
