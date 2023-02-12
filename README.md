@@ -1,1 +1,1 @@
-# CsxSourceGenerator
+# CSharp.SourceGen.Csx

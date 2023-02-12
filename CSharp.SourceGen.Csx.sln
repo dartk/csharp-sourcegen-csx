@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsxSourceGenerator", "CsxSourceGenerator\CsxSourceGenerator.csproj", "{0A8FBEB7-7959-4F1A-A887-2B9F1B275633}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.SourceGen.Csx", "CSharp.SourceGen.Csx\CSharp.SourceGen.Csx.csproj", "{0A8FBEB7-7959-4F1A-A887-2B9F1B275633}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsxSourceGenerator.Test", "CsxSourceGenerator.Test\CsxSourceGenerator.Test.csproj", "{D28237B0-41E7-41F3-AB57-9ED329861D1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.SourceGen.Csx.Tests", "CSharp.SourceGen.Csx.Tests\CSharp.SourceGen.Csx.Tests.csproj", "{D28237B0-41E7-41F3-AB57-9ED329861D1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

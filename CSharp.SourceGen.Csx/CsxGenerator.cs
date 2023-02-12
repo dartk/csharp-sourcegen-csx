@@ -15,7 +15,7 @@ public class CsxGenerator : ISourceGenerator
     }
 
 
-    public void Execute(GeneratorExecutionContext context) => Try(() =>
+    public void Execute(GeneratorExecutionContext context)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -54,7 +54,7 @@ public class CsxGenerator : ISourceGenerator
             }
 
             context.AddSource(Path.GetFileName(filePath) + ".out", sourceBuilder.ToString());
-            
+
             if (process.ExitCode == 0)
             {
                 foreach (var error in errors)
@@ -101,36 +101,27 @@ public class CsxGenerator : ISourceGenerator
                 return errors;
             }
         }
-    });
+    }
 
 
     private static readonly DiagnosticDescriptor ScriptError = new(
-        id: "CSXGEN001",
+        id: $"{DiagnosticIdPrefix}001",
         title: "C# script threw exception",
         messageFormat: "{0}",
-        category: "CsxSourceGenerator",
+        category: DiagnosticCategory,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
 
     private static readonly DiagnosticDescriptor ScriptWarning = new(
-        id: "CSXGEN002",
+        id: $"{DiagnosticIdPrefix}002",
         title: "C# script produced warning",
         messageFormat: "{0}",
-        category: "CsxSourceGenerator",
+        category: DiagnosticCategory,
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true);
 
 
-    private static readonly DiagnosticDescriptor ScriptExecutionTimout = new(
-        id: "CSXGEN004",
-        title: "C# script execution timed out",
-        messageFormat: "'{0}' execution timed out",
-        category: "CsxSourceGenerator",
-        DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
-
-
-    private static readonly Regex ExceptionRegex =
-        new($@".*Exception: (?<message>.*)\r?\n? *at .*:line (?<line>[\d]+)");
+    private const string DiagnosticIdPrefix = "SourceGen.Csx";
+    private const string DiagnosticCategory = "CSharp.SourceGen.Csx";
 }

@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>10</LangVersion>
+        <RootNamespace>CSharp.SourceGen.Csx</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -13,15 +14,16 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>Dartk.CsxSourceGenerator</PackageId>
+        <PackageId>Dartk.CSharp.SourceGen.Csx</PackageId>
+        <Title>CSharp.SourceGen.Csx</Title>
         <Authors>Dmitry Artemkin</Authors>
         <Copyright>2023</Copyright>
-        <PackageVersion>0.2.1-alpha13</PackageVersion>
+        <PackageVersion>0.2.1-alpha14</PackageVersion>
         <Title>CsxSourceGenerator</Title>
         <Description>C# source generator that invokes C# scripts</Description>
-        <RepositoryUrl>https://github.com/dartk/CsxSourceGenerator</RepositoryUrl>
+        <RepositoryUrl>https://github.com/dartk/csharp-sourcegen-csx</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>https://github.com/dartk/CsxSourceGenerator</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/dartk/csharp-sourcegen-csx</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
@@ -31,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
