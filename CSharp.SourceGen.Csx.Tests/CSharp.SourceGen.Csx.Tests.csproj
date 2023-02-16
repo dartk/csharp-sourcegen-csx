@@ -15,17 +15,15 @@
     <ItemGroup>
         <AdditionalFiles Include="generator.csx" />
         <AdditionalFiles Include="Scripts\*.csx" />
+        <None Remove="content.txt" />
+        <AdditionalFiles Include="content.txt">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </AdditionalFiles>
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
       <PackageReference Include="xunit" Version="2.4.2" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="content.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 
     <PropertyGroup>
