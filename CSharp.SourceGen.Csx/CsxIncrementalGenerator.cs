@@ -53,7 +53,7 @@ public class CsxIncrementalGenerator : IIncrementalGenerator
             $"// Generated from '{Path.GetFileName(scriptFile)}'"
             + Environment.NewLine
             + ScriptRunner.Run(scriptFile, context.ReportDiagnostic, context.CancellationToken);
-        context.AddSource(Path.GetFileName(scriptFile) + ".out", source);
+        context.AddSource(Path.GetFileNameWithoutExtension(scriptFile) + ".g", source);
     }
 
 
