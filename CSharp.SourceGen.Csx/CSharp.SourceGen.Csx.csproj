@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <LangVersion>10</LangVersion>
+        <LangVersion>11</LangVersion>
         <RootNamespace>CSharp.SourceGen.Csx</RootNamespace>
     </PropertyGroup>
 
@@ -18,14 +18,14 @@
         <Title>CSharp.SourceGen.Csx</Title>
         <Authors>Dmitry Artemkin</Authors>
         <Copyright>2023</Copyright>
-        <PackageVersion>0.2.1-alpha14</PackageVersion>
-        <Title>CsxSourceGenerator</Title>
-        <Description>C# source generator that invokes C# scripts</Description>
+        <Description>Generate C# code from C# scripts</Description>
+        <PackageProjectUrl>https://github.com/dartk/csharp-sourcegen-csx</PackageProjectUrl>
         <RepositoryUrl>https://github.com/dartk/csharp-sourcegen-csx</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>https://github.com/dartk/csharp-sourcegen-csx</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>C# scripting code generation</PackageTags>
+        <PackageVersion>0.3.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
