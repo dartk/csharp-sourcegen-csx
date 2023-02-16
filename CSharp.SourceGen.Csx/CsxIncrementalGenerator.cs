@@ -49,8 +49,10 @@ public class CsxIncrementalGenerator : IIncrementalGenerator
 
     private static void CompileScript(SourceProductionContext context, string scriptFile)
     {
-        var source = ScriptRunner.Run(scriptFile, context.ReportDiagnostic,
-            context.CancellationToken);
+        var source =
+            $"// Generated from '{Path.GetFileName(scriptFile)}'"
+            + Environment.NewLine
+            + ScriptRunner.Run(scriptFile, context.ReportDiagnostic, context.CancellationToken);
         context.AddSource(Path.GetFileName(scriptFile) + ".out", source);
     }
 
